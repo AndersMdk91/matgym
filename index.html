@@ -20,6 +20,32 @@
       if (error) console.error("Supabase ERROR:", error);
       else console.log("Supabase OK:", data);
     });
+  async function saveHighscore(name, points) {
+  const { error } = await supabase
+    .from('highscores')
+    .insert([{ name, points }]);
+
+  if (error) {
+    console.error("Fejl ved gemning til Supabase:", error);
+  } else {
+    console.log("Highscore gemt i Supabase!");
+  }
+}
+
+async function loadHighscores() {
+  const { data, error } = await supabase
+    .from('highscores')
+    .select('*')
+    .order('points', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Fejl ved hentning fra Supabase:", error);
+    return [];
+  }
+
+  return data;
+}
 </script>
 
 <style>
