@@ -16,7 +16,7 @@
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // Test om Supabase virker
-  sb.from("highscores").select("*").limit(1).then(({ data, error }) => {
+  sb.from("public.Highscores").select("*").limit(1).then(({ data, error }) => {
     if (error) console.error("Supabase ERROR:", error);
     else console.log("Supabase OK:", data);
   });
