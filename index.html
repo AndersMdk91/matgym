@@ -246,6 +246,8 @@ function endGame() {
         if (name) localStorage.setItem("playerName", name);
     }
 
+  saveHighscore(name, points);
+
     // Gem score
     highscores.push({name, points});
     highscores.sort((a,b) => b.points - a.points);
@@ -258,15 +260,20 @@ function endGame() {
     startGame();
 }
 
-function updateHighscore() {
-    const list = document.getElementById("scoreList");
-    list.innerHTML = "";
-    highscores.forEach(s => {
-        let li = document.createElement("li");
-        li.innerText = `${s.name}: ${s.points} point`;
-        list.appendChild(li);
-    });
+
+async function updateHighscore() {
+  const scores = await loadHighscores();
+
+  const list = document.getElementById("scoreList");
+  list.innerHTML = "";
+
+  scores.forEach(s => {
+    const li = document.createElement("li");
+    li.innerText = `${s.name}: ${s.points} point`;
+    list.appendChild(li);
+  });
 }
+
 
 updateHighscore();
 startGame();
@@ -274,3 +281,30 @@ startGame();
 
 </body>
 </html>
+async function saveHighscore(name, points) {
+  const { error } = await supabase
+    .from('highscores')
+    .insert([
+      { name: name, points: points }
+    ]);
+
+  if (error) {
+    console.error("Fejl ved gemning til Supabase:", error);
+  } else {
+    console.log("Highscore gemt i Supabase!");
+  }
+}
+async function loadHighscores() {
+  const { data, error } = await supabase
+    .from('highscores')
+    .select('*')
+    .order('points', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Fejl ved hentning fra Supabase:", error);
+    return [];
+  }
+
+  return data;
+}
