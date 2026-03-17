@@ -6,7 +6,7 @@
   const supabase1 = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // Test at supabase virker:
-  supabase1.from("highscores").select("*").limit(1).then(({ data, error }) => {
+  supabase1.from("Highscores").select("*").limit(1).then(({ data, error }) => {
     if (error) console.error("Supabase ERROR:", error);
     else console.log("Supabase OK:", data);
   });
